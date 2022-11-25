@@ -1,0 +1,232 @@
+<html>
+    <head>
+        <title>FunnyRat Console</title>
+    </head>
+    <style>
+        body {
+            background-color: rgb(50,50,50);
+            font-family: "Consolas";
+            color: white;
+            font-size: 18px;
+            overflow: hidden;
+        }
+
+        hr {
+            border: none;
+            background-color: white;
+            height: 1px;
+        }
+
+        /* Messages */
+        a {
+            color: rgb(104, 74, 255);
+            text-decoration: none;
+        }
+
+        .msg_info {
+            color: rgb(74, 140, 255);
+            padding-right: 5px;
+        }
+
+        .msg_warning {
+            color: rgb(255, 74, 74);
+            padding-right: 5px;
+        }
+
+        .msg_greet {
+            color: rgb(74, 255, 104);
+            padding-right: 5px;
+        }
+
+        .msg_title {
+            color: rgb(252, 255, 74);
+            padding-right: 5px;
+        }
+
+        .msg_system {
+            color: rgb(255, 74, 234);
+            padding-right: 5px;
+        }
+
+        .msg_invisible {
+            color: rgb(50,50,50);
+            padding-right: 5px;
+        }
+
+        /* Inner Subconsole Messages */
+        .msg_subinfo {
+            color: rgb(169, 169, 169);
+            padding-right: 5px;
+        }
+
+        /* Input */
+        .input_div {
+            background-color: rgb(50,50,50);
+            position: absolute;
+            bottom: 5px;
+            width: 100%;
+            left: 0;
+        }
+
+        input {
+            background-color: rgb(50,50,50);
+            font-family: "Consolas";
+            border: none;
+            font-size: 18px;
+            color: white;
+            width: 100%;
+            padding-left: 5px;
+        }
+
+        input:focus {
+            outline: none;
+        }
+    </style>
+    <body>
+        <div class="display">
+            <span class="msg_info">[INFO]</span>FunnyRat Console<br>
+            <span class="msg_info">[INFO]</span>Build Number: FRC-0001<br>
+            <span class="msg_info">[INFO]</span>Last Updated: 11/25/2022 (FRC-0001)<br>
+            <span class="msg_info">[INFO]</span>Current DateTime: <span id="time"></span><br>
+            <span class="msg_info">[INFO]</span>Pro Tip: <span id="tooltip" class="msg_title">Text overflowing? /clear to clear everything!</span><br>
+            <br>
+            <div class="output" id="output"><span class="msg_title">
+                .########.##.....##.##....##.##....##.##....##...########.....###....########<br>
+                .##.......##.....##.###...##.###...##..##..##....##.....##...##.##......##...<br>
+                .##.......##.....##.####..##.####..##...####.....##.....##..##...##.....##...<br>
+                .######...##.....##.##.##.##.##.##.##....##......########..##.....##....##...<br>
+                .##.......##.....##.##..####.##..####....##......##...##...#########....##...<br>
+                .##.......##.....##.##...###.##...###....##......##....##..##.....##....##...<br>
+                .##........#######..##....##.##....##....##......##.....##.##.....##....##...<br></span>
+                <span class="msg_greet">[WELCOME]</span>Welcome to FunnyRat Console! <br>
+                <span class="msg_greet">[WELCOME]</span>For all commands fo /help! <br><br>
+                <span class="msg_system">[UPDATE]</span>New Update Installed!<br>
+                <span class="msg_invisible">[UPDATE]</span>- /say has been added<br>
+                <span class="msg_invisible">[UPDATE]</span>- /amongus now shows you a red among us instead of a white one.<br>
+            </div>
+            <div class="input_div">
+                <hr>
+                <input id="input" placeholder="Insert Commands Here... /help for all commands" onkeydown="command(this)">
+            </div>
+        </div>
+    </body>
+    <script>
+        const amongus = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⣠⣴⣶⣿⣿⣷⣶⣄⣀⣀&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⣰⣾⣿⣿⡿⢿⣿⣿⣿⣿⣿⣿⣿⣷⣦⡀&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⢀⣾⣿⣿⡟⠁⣰⣿⣿⣿⡿⠿⠻⠿⣿⣿⣿⣿⣧&nbsp;&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⣾⣿⣿⠏&nbsp;⣴⣿⣿⣿⠉&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠈⢻⣿⣿⣇&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;⢀⣠⣼⣿⣿⡏&nbsp;⢠⣿⣿⣿⠇&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠈⣿⣿⣿⡀&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;⣰⣿⣿⣿⣿⣿⡇&nbsp;⢸⣿⣿⣿⡀&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⣿⣿⣿⡇&nbsp;&nbsp;<br> &nbsp;&nbsp;⢰⣿⣿⡿⣿⣿⣿⡇&nbsp;⠘⣿⣿⣿⣧&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⢀⣸⣿⣿⣿⠁&nbsp;&nbsp;<br> &nbsp;&nbsp;⣿⣿⣿⠁⣿⣿⣿⡇&nbsp;&nbsp;⠻⣿⣿⣿⣷⣶⣶⣶⣶⣶⣿⣿⣿⣿⠃&nbsp;&nbsp;&nbsp;<br> &nbsp;⢰⣿⣿⡇&nbsp;⣿⣿⣿&nbsp;&nbsp;&nbsp;&nbsp;⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠁&nbsp;&nbsp;&nbsp;&nbsp;<br> &nbsp;⢸⣿⣿⡇&nbsp;⣿⣿⣿&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠉⠛⠛⠛⠉⢉⣿⣿&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br> &nbsp;⢸⣿⣿⣇&nbsp;⣿⣿⣿&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⢀⣤⣤⣤⡀&nbsp;&nbsp;⢸⣿⣿⣿⣷⣦&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;⢻⣿⣿⣶⣿⣿⣿&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠈⠻⣿⣿⣿⣦⡀&nbsp;⠉⠉⠻⣿⣿⡇&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;⠛⠿⣿⣿⣿⣿⣷⣤⡀&nbsp;&nbsp;&nbsp;&nbsp;⠈⠹⣿⣿⣇⣀&nbsp;⣠⣾⣿⣿⡇&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠹⣿⣿⣿⣿⣦⣤⣤⣤⣤⣾⣿⣿⣿⣿⣿⣿⣿⣿⡟&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠉⠻⢿⣿⣿⣿⣿⣿⣿⠿⠋⠉⠛⠋⠉⠉⠁&nbsp;&nbsp;&nbsp;&nbsp;<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;⠈⠉⠉⠉⠁<br> ';
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        const tooltips = ['Text overflowing? /clear to clear everything!', 'Rats are cute!', 'Kpop group BTS is uhh...']
+
+        // Time
+        function refreshTime() {
+            const timeDisplay = document.getElementById("time");
+            const dateString = new Date().toLocaleString();
+            const formattedString = dateString.replace(", ", " at ");
+            timeDisplay.textContent = formattedString;
+            }
+            setInterval(refreshTime, 1000);
+
+        // Time
+        function randomTooltip() {
+            const tooltipDisplay = document.getElementById("tooltip");
+            const randomTip = Math.floor(Math.random() * tooltips.length)
+            tooltipDisplay.textContent = tooltips[randomTip];
+            }
+            setInterval(randomTooltip, 5000);
+
+        // Command Manager
+        async function command(element) {
+            if(event.key === 'Enter') {
+                const variables = element.value.split(" ")
+                if (element.value.charAt(0) === "/") {
+                    element.value = element.value.replace("/", "");
+                }
+                if (element.value.toLowerCase() === 'help') {
+                    clearDisplay(1)
+                    updateDisplay("<span class='msg_info'>[INFO]</span>FunnyRat Console Help")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>/help: <span class='msg_subinfo'>Shows you this message!</span>")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>/social: <span class='msg_subinfo'>Shows you my socials (not important)!</span>")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>/amongus: <span class='msg_subinfo'>C... cute among us! 😳</span>")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>/clear: <span class='msg_subinfo'>Clears the display</span>")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>/say: <span class='msg_subinfo'>Repeat after me!</span>")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>/resume: <span class='msg_subinfo'>Resume? What the fr*ck is this for?</span>")
+                    finishDisplay(0)
+                } else if (element.value.toLowerCase() === 'clear') {
+                    clearDisplay(0)
+                } else if (element.value.toLowerCase() === 'amongus') {
+                    clearDisplay(1)
+                    updateDisplay("<span class='msg_warning'>" + amongus)
+                    updateDisplay("<span class='msg_info'>[INFO]</span>Cute Among Us")
+                    finishDisplay(0)
+                } else if (element.value.toLowerCase() === 'social') {
+                    clearDisplay(1)
+                    updateDisplay("<span class='msg_info'>[INFO]</span>Socials")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>Instagram: <a href='https://instagram.com/easonuwu'>instagram.com/easonuwu</a>")
+                    updateDisplay("<span class='msg_info'>[INFO]</span>YouTube: <a href='https://youtube.com/easonuwu'>youtube.com/easonuwu</a>")
+                    finishDisplay(0)
+                } else if (variables[0].toLowerCase() === 'say') {
+                    updateDisplay("<span class='msg_info'>[INFO-USER]</span>You: " + element.value.slice(4))
+                } else if (variables[0].toLowerCase() === 'dev') {
+                    loadDelay()
+                    await delay(6000)
+                    clearDisplay(1)
+                    updateDisplay("<span class='msg_warning'>[DEV]</span>The Dev Build is not public at the moment.")
+                    finishDisplay(0)
+                }
+            }
+        }
+
+        // Display Manager
+        function updateDisplay(newValue) {
+            const old_value = document.getElementById("output").innerHTML
+            const new_value = old_value + "<br>" + newValue
+            document.getElementById("output").innerHTML = new_value
+            document.getElementById("input").value = ""
+        }
+
+        function clearDisplay(type){ 
+            if (type === 0) {
+                document.getElementById("output").innerHTML = "<span class='msg_greet'>[WELCOME]</span>Welcome to FunnyRat Console!<br><span class='msg_greet'>[WELCOME]</span>For all commands fo /help!"
+            } else if (type === 1) {
+                document.getElementById("output").innerHTML = ""
+            }
+            document.getElementById("input").value = ""
+        }
+        
+        function finishDisplay(type){ 
+            if (type === 0) {
+                updateDisplay("<br><span class='msg_info'>[INFO]</span>Finished? /clear to continue!")
+            }
+        }
+
+        // Others
+        async function loadDelay() {
+            document.getElementById("input").disabled = true;
+            document.getElementById("input").value = "System Busy... Please Wait...";
+            document.getElementById("output").innerHTML = "<span class='msg_warning'>[WARNING]</span>Busy... Waiting..."
+            await delay(1000);
+            updateDisplay("<span class='msg_warning'>[WARNING]</span>Busy... Waiting... <span class='msg_subinfo'>(est. 3s remaining)</span>")
+            document.getElementById("input").value = "System Busy... Please Wait...";
+            await delay(1000);
+            updateDisplay("<span class='msg_warning'>[WARNING]</span>Busy... Waiting... <span class='msg_subinfo'>(est. 2s remaining)</span>")
+            document.getElementById("input").value = "System Busy... Please Wait...";
+            await delay(1000);
+            updateDisplay("<span class='msg_warning'>[WARNING]</span>Busy... Waiting... <span class='msg_subinfo'>(est. 1s remaining)</span>")
+            document.getElementById("input").value = "System Busy... Please Wait...";
+            await delay(1000);
+            updateDisplay("<span class='msg_warning'>[WARNING]</span>Busy... Waiting... <span class='msg_subinfo'>(est. 0s remaining)</span>")
+            document.getElementById("input").value = "System Busy... Please Wait...";
+            await delay(1000);
+            clearDisplay(1)
+            document.getElementById("input").disabled = false;
+        }
+        
+        function PConly(){
+            if (window.innerWidth < 500){
+                console.log("PC only check.")
+                document.getElementById("output").innerHTML = "<span class='msg_warning'>[WARNING]</span>Please only view this webpage on PC";
+            }
+        }
+
+        window.onload = PConly();
+        window.onload = document.getElementById("input").focus();
+    </script>
+</html>
